@@ -14,6 +14,10 @@
 
 var player = NaN;
 
+var checkPath = function() {
+	// !!!!!!!!
+}
+
 var drawAll = function() {
 	var bg = this.rect(0, 0, 800, 600).attr({"fill": "#5da130"});
 	player = this.text(100, 100, "\u263a").attr({"font": "20px Arial"});
