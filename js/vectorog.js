@@ -33,7 +33,7 @@ var locationGenerator = function() {
 			var r = randInt();
 
 			if (i == 2 && ii == 2) {
-				continue;
+				l[i].push(0);  // player
 			}
 
 			if (r > 0.8){
