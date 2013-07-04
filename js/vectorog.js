@@ -15,45 +15,18 @@
 var player = NaN;
 
 // 20 x 15
-var Location = []
-
-var randInt = function() {
-	return Math.random();
-}
-
-var locationGenerator = function() {
-	// 20 x 15
-	// tree = "\u2663"
-	var l = [];
-
-	for (var i = 0; i < 15; i++){
-		l.push([]);
-
-		for (var ii = 0; ii < 20; ii++){
-			var r = randInt();
-
-			if (i == 2 && ii == 2) {
-				l[i].push(0);  // player
-			}
-
-			if (r > 0.8){
-				l[i].push(2663);
-			} else {
-				l[i].push(0);
-			}
-		}
-	}
-
-	return l;
-}
+// var Location = []
+var lid = 0;
 
 var drawLocation = function(paper, l) {
 	var x = 20;
 	var y = 20;
 
-	for (var i = 0; i < l.length; i++){
-		for (var ii = 0; ii < l[i].length; ii++){
-			var e = l[i][ii];
+	var maps = l.getMaps();
+
+	for (var i = 0; i < maps.length; i++){
+		for (var ii = 0; ii < maps[i].length; ii++){
+			var e = maps[i][ii];
 
 			if (e == 2663) {
 				paper.text(x, y, "\u2663").attr({"font": "20px Arial"});
@@ -79,8 +52,10 @@ var drawGrid = function(paper){
 var drawAll = function() {
 	var bg = this.rect(0, 0, 800, 600).attr({"fill": "#5da130"});
 	drawGrid(this);
-	Location = locationGenerator();
-	drawLocation(this, Location);
+	lid = WorldMap.newLocation("Starting location.", 2, 2);
+
+	var l = WorldMap.getLocationByLID(lid);
+	drawLocation(this, l);
 
 	player = this.text(100, 100, "@").attr({"font": "20px Arial"});
 	//tree = this.text(20, 20, "\u2663").attr({"font": "20px Arial"});
@@ -97,7 +72,10 @@ var checkPath = function(x, y) {
 	var xx = Math.ceil(x / 40) - 1;
 	var yy = Math.ceil(y / 40) - 1;
 
-	var e = Location[yy][xx];
+	var l = WorldMap.getLocationByLID(lid);
+	var maps = l.getMaps();
+
+	var e = maps[yy][xx];
 
 	if (e == 2663) {
 		return false;
