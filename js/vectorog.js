@@ -52,7 +52,7 @@ var drawGrid = function(paper){
 var drawAll = function() {
 	var bg = this.rect(0, 0, 800, 600).attr({"fill": "#5da130"});
 	drawGrid(this);
-	lid = WorldMap.newLocation("Starting location.", "veld", 2, 2);
+	lid = WorldMap.newLocation("Starting location.", "veld", 0, 0, 0, 2, 2);
 
 	var l = WorldMap.getLocationByLID(lid);
 	drawLocation(this, l);

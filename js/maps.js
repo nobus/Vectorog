@@ -1,18 +1,28 @@
 
 var WorldMap = {
-	locations: []
+	locations: {}
 }
 
 WorldMap.getLocationByLID = function(lid) {
 	return this.locations[lid];
 }
 
-WorldMap.newLocation = function(name, type, px, py) {
-	// px and py == 1 if palyer not in location
-	var l = new Location(name, type, px, py);
-	this.locations.push(l);
+WorldMap.getLIDByXYZ = function(x, y, z) {
+	return x + "_" + y + "_" + z;
+}
 
-	return this.locations.length - 1;
+WorldMap.getXYZByLID = function(lid) {
+	return lid.split("_");
+}
+
+WorldMap.newLocation = function(name, type, x, y, z, px, py) {
+	// px and py == undefined if palyer not in location
+	var l = new Location(name, type, px, py);
+	var lid = this.getLIDByXYZ(x, y, z);
+
+	this.locations[lid] = l;
+
+	return lid;
 }
 
 var Location = function(name, type, px, py) {
