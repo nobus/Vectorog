@@ -158,6 +158,10 @@ var nextLocation = function(x, y) {
 }
 
 $(function() {
+	if (!storageSupport()) {
+		return false;
+	}
+
 	var screen = Raphael("container", 800, 600, drawStartLocation); 
 
 	$(document).keydown(function(event){
