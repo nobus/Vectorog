@@ -15,7 +15,6 @@
 var player = NaN;
 
 // 20 x 15
-// var Location = []
 var lid = 0;
 
 var drawLocation = function(paper, l) {
@@ -51,11 +50,11 @@ var drawGrid = function(paper){
 
 var drawAll = function (paper, name, type, x, y, z, px, py) {
 	var bg = paper.rect(0, 0, 800, 600).attr({"fill": "#5da130"});
-	drawGrid(paper);
-	lid = WorldMap.newLocation(name, type, x, y, z, px, py);
-
+	var lid = WorldMap.newLocation(name, type, x, y, z, px, py);
 	var l = WorldMap.getLocationByLID(lid);
+
 	drawLocation(paper, l);
+	drawGrid(paper);
 
 	$("#map").html(lid);
 
@@ -104,17 +103,10 @@ var drawSomeLocation = function (direction) {
 
 var checkPath = function (x, y) {
 	// 0, 0, 800, 600
-	/*
-	if (x <= 0 || x >= 800){
-		return false;
-	} else if (y <= 0 || y >= 600) {
-		return false;
-	}
-	*/
-
 	var xx = Math.ceil(x / 40) - 1;
 	var yy = Math.ceil(y / 40) - 1;
 
+	var lid = player.getLID();
 	var l = WorldMap.getLocationByLID(lid);
 	var maps = l.getMaps();
 
