@@ -219,5 +219,13 @@ $(function() {
 
 	});
 
+	$("#menu").click(function(){
+		$("#dialog_menu").show();
+	});
+
+	$("#return").click(function(){
+		$("#dialog_menu").hide();
+	});
+
 });
 
