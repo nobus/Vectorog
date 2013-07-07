@@ -8,7 +8,7 @@ WorldMap.getLocationByLID = function(lid) {
 }
 
 WorldMap.getLIDByXYZ = function(x, y, z) {
-	return x + "_" + y + "_" + z;
+	return parseInt(x) + "_" + parseInt(y) + "_" + parseInt(z);
 }
 
 WorldMap.getXYZByLID = function(lid) {
