@@ -15,12 +15,35 @@ WorldMap.getXYZByLID = function(lid) {
 	return lid.split("_");
 }
 
-WorldMap.newLocation = function(name, type, x, y, z, px, py) {
+WorldMap._newLocation = function(name, type, x, y, z, px, py) {
 	// px and py == undefined if palyer not in location
-	var l = new Location(name, type, px, py);
 	var lid = this.getLIDByXYZ(x, y, z);
 
-	this.locations[lid] = l;
+	if (!(lid in this.locations)) {
+		var l = new Location(name, type, px, py);
+		this.locations[lid] = l;
+	}
+
+	return lid;
+}
+
+WorldMap.newLocation = function(name, type, x, y, z, px, py) {
+	var lid = this._newLocation(name, type, x, y, z, px, py);
+
+	/*
+	setNeighborhood:
+		top		later	!!!!!
+		down	later	!!!!!
+		west
+		east
+		north
+		south
+	*/
+
+	this._newLocation("UNDEFINED", type, x - 1, y, z);
+	this._newLocation("UNDEFINED", type, x + 1, y, z);
+	this._newLocation("UNDEFINED", type, x, y - 1, z);
+	this._newLocation("UNDEFINED", type, x, y + 1, z);
 
 	return lid;
 }
@@ -76,8 +99,6 @@ Location.prototype.getMaps = function() {
 
 Location.prototype.setNeighborhood = function (direction, lid) {
 	/*
-		lid is index of the array World.locations
-
 		top
 		down
 		west
