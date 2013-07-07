@@ -48,6 +48,31 @@ WorldMap.newLocation = function(name, type, x, y, z, px, py) {
 	return lid;
 }
 
+WorldMap.getNeighborhoodLocation = function (direction, lid) {
+	var coord = this.getXYZByLID(lid);
+	var x = coord[0];
+	var y = coord[1];
+	var z = coord[2];
+
+	if (direction == "north") {
+		y--;
+	} else if (direction == "south") {
+		y++;
+	} else if (direction == "west") {
+		x--;
+	} else if (direction == "east") {
+		x++;
+	}
+
+	var new_lid = this.getLIDByXYZ(x, y, z);
+
+	if (new_lid in this.locations) {
+		return new_lid;
+	}
+
+	return false;
+}
+
 var Location = function(name, type, px, py) {
 	this.name = name;
 	this.type = type;
@@ -97,16 +122,4 @@ Location.prototype.getMaps = function() {
 	return this.maps;
 }
 
-Location.prototype.setNeighborhood = function (direction, lid) {
-	/*
-		top
-		down
-		west
-		east
-		north
-		south
-	*/
-
-	this.neighborhood[direction] = lid;
-}
 

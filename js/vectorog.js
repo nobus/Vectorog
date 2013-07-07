@@ -101,12 +101,18 @@ var drawSomeLocation = function (direction) {
 		}); 
 }
 
-var checkPath = function (x, y) {
+var checkPath = function (x, y, lid) {
 	// 0, 0, 800, 600
+
+	if (x <= 0 || x >= 800) {
+		return false;
+	} else if (y <= 0 || y >= 600) {
+		return false;
+	}
+
 	var xx = Math.ceil(x / 40) - 1;
 	var yy = Math.ceil(y / 40) - 1;
 
-	var lid = player.getLID();
 	var l = WorldMap.getLocationByLID(lid);
 	var maps = l.getMaps();
 
@@ -123,10 +129,29 @@ var checkPath = function (x, y) {
 
 var nextLocation = function(x, y) {
 	// 0, 0, 800, 600
-	if (x <= 0 || x >= 800){
-		return true;
-	} else if (y <= 0 || y >= 600) {
-		return true;
+
+	var current_lid = player.getLID();
+
+	if (x <= 0){
+		// west
+		var next_location = WorldMap.getNeighborhoodLocation("west", current_lid);
+		x = 780;
+		return checkPath(x, y, next_location);
+	} else if (x >= 800){
+		// east
+		var next_location = WorldMap.getNeighborhoodLocation("east", current_lid);
+		x = 20;
+		return checkPath(x, y, next_location);
+	} else if (y <= 0) {
+		// north
+		var next_location = WorldMap.getNeighborhoodLocation("north", current_lid);
+		y = 580;
+		return checkPath(x, y, next_location);
+	} else if (y >= 600) {
+		// south
+		var next_location = WorldMap.getNeighborhoodLocation("south", current_lid);
+		y = 20;
+		return checkPath(x, y, next_location);
 	}
 
 	return false;
@@ -155,42 +180,36 @@ $(function() {
 		var x = position[0];
 		var y = position[1];
 
+		var lid = player.getLID();
+
 		var step = 40;
 		if (key == 87 || key == 38) {
 			// up
-			if (checkPath(x, y - step)) {
-				if (nextLocation(x, y - step)) {
-					drawSomeLocation("north");
-				} else {
-					player.setPosition(x, y - step);
-				}
+			if (nextLocation(x, y - step)) {
+				drawSomeLocation("north");
+			} else if (checkPath(x, y - step, lid)) {
+				player.setPosition(x, y - step);
 			}
 		} else if (key == 83 || key == 40) {
 			// down
-			if (checkPath(x, y + step)) {
-				if (nextLocation(x, y + step)) {
-					drawSomeLocation("south");
-				} else {
-					player.setPosition(x, y + step);
-				}
+			if (nextLocation(x, y + step)) {
+				drawSomeLocation("south");
+			} else if (checkPath(x, y + step, lid)) {
+				player.setPosition(x, y + step);
 			}
 		} else if (key == 65 || key == 37) {
 			// left
-			if (checkPath(x - step, y)) {
-				if (nextLocation(x - step, y)) {
-					drawSomeLocation("west");
-				} else {
-					player.setPosition(x - step, y);
-				}
+			if (nextLocation(x - step, y)) {
+				drawSomeLocation("west");
+			} else if (checkPath(x - step, y, lid)) {
+				player.setPosition(x - step, y);
 			}
 		} else if (key == 68 || key == 39) {
 			// right
-			if (checkPath(x + step, y)) {
-				if (nextLocation(x + step, y)) {
-					drawSomeLocation("east");
-				} else {
-					player.setPosition(x + step, y);
-				}
+			if (nextLocation(x + step, y)) {
+				drawSomeLocation("east");
+			} else if (checkPath(x + step, y, lid)) {
+				player.setPosition(x + step, y);
 			}
 		}
 
