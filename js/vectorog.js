@@ -57,6 +57,8 @@ var drawAll = function (paper, name, type, x, y, z, px, py) {
 	var l = WorldMap.getLocationByLID(lid);
 	drawLocation(paper, l);
 
+	$("#map").html(lid);
+
 	return lid;
 }
 
