@@ -1,7 +1,6 @@
 
 .dialog {
 	display: none;
-	//visibility: hidden;
 	position: absolute;
 	border: solid;
 	background: #aaaaaa;
