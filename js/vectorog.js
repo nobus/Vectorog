@@ -12,6 +12,7 @@
 	http://en.wikipedia.org/wiki/List_of_Unicode_characters
 */
 
+var gamePaused = false;		// ugly hack
 var player = NaN;
 
 // 20 x 15
@@ -102,6 +103,10 @@ var drawSomeLocation = function (direction) {
 }
 
 var checkPath = function (x, y, lid) {
+	if (gamePaused) {
+		return false;
+	}
+
 	// 0, 0, 800, 600
 
 	if (x <= 0 || x >= 800) {
@@ -220,10 +225,12 @@ $(function() {
 	});
 
 	$("#menu").click(function(){
+		gamePaused = true;
 		$("#dialog_menu").show();
 	});
 
 	$("#return").click(function(){
+		gamePaused = false;
 		$("#dialog_menu").hide();
 	});
 
