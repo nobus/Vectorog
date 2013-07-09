@@ -22,7 +22,7 @@ var drawLocation = function(paper, l) {
 	var x = 20;
 	var y = 20;
 
-	var maps = l.getMaps();
+	var maps = l.maps;
 
 	for (var i = 0; i < maps.length; i++){
 		for (var ii = 0; ii < maps[i].length; ii++){
@@ -119,7 +119,7 @@ var checkPath = function (x, y, lid) {
 	var yy = Math.ceil(y / 40) - 1;
 
 	var l = WorldMap.getLocationByLID(lid);
-	var maps = l.getMaps();
+	var maps = l.maps;
 
 	if (xx >= 0 && yy >= 0 && yy < maps.length && xx < maps[yy].length){
 		var e = maps[yy][xx];
@@ -163,7 +163,11 @@ var nextLocation = function(x, y) {
 }
 
 $(function() {
-	if (!storageSupport()) {
+	if (storageSupport()) {
+		if ("vectorog" in window.localStorage) {
+			WorldMap["locations"] = JSON.parse(window.localStorage["vectorog"]);
+		}
+	} else {
 		return false;
 	}
 
@@ -234,5 +238,8 @@ $(function() {
 		$("#dialog_menu").hide();
 	});
 
+	$("#save_game").click(function(){
+		window.localStorage["vectorog"] = JSON.stringify(WorldMap["locations"]);
+	});
 });
 

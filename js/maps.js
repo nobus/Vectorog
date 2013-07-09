@@ -76,11 +76,11 @@ WorldMap.getNeighborhoodLocation = function (direction, lid) {
 var Location = function(name, type, px, py) {
 	this.name = name;
 	this.type = type;
-	this.neighborhood = {};
-	this.maps = this.mapGenerator(px, py);
+	this.neighborhood = {};	// ???
+	this.maps = mapGenerator(type, px, py);
 }
 
-Location.prototype.mapGenerator = function(px, py) {
+var mapGenerator = function(type, px, py) {
 	// 20 x 15
 	// tree = "\u2663"
 
@@ -93,7 +93,7 @@ Location.prototype.mapGenerator = function(px, py) {
 	*/
 
 	var locationTypes = {"thicket": 0.5, "forest": 0.7, "veld": 0.9};
-	var t = locationTypes[this.type];
+	var t = locationTypes[type];
 
 	var l = [];
 
@@ -118,8 +118,5 @@ Location.prototype.mapGenerator = function(px, py) {
 	return l;
 }
 
-Location.prototype.getMaps = function() {
-	return this.maps;
-}
 
 
