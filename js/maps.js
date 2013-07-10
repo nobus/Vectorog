@@ -12,7 +12,8 @@ WorldMap.getLIDByXYZ = function(x, y, z) {
 }
 
 WorldMap.getXYZByLID = function(lid) {
-	return lid.split("_");
+	var raw = lid.split("_");
+	return [parseInt(raw[0]), parseInt(raw[1]), parseInt(raw[2])];
 }
 
 WorldMap.generateLocationType = function(x, y, z) {
@@ -93,7 +94,7 @@ var Location = function(name, type, lid, px, py) {
 	this.lid = lid;
 	this.neighborhood = {};	// ???
 	this.portals = portalsGenerator();
-	this.maps = mapGenerator(type, px, py);
+	this.maps = mapGenerator(this, px, py);
 	this.bg_color = bgFactory(type);
 }
 
@@ -105,7 +106,7 @@ var bgFactory = function(type) {
 var portalsGenerator = function() {
 	var portals = [];
 
-	var n = getRandomInt(0, 2);
+	var n = getRandomInt(0, 3);
 
 	if (n > 0) {
 		for (var i = 0; i < n; i++) {
@@ -120,14 +121,30 @@ var portalsGenerator = function() {
 			var x = getRandomInt(prev_x, 20);
 			var y = getRandomInt(prev_y, 15);
 
-			portals.push([x, y]);
+			// check distance between portals
+			if (((x - prev_x) > 3) && ((y - prev_y) > 3 )) {
+				portals.push([x, y]);
+			}
 		}
 	}
 
 	return portals;
 }
 
-var mapGenerator = function(type, px, py) {
+var checkPortal = function(portals, x, y) {
+	if (portals.length > 0) {
+		for (var i = 0; i < portals.length; i++){
+			var p = portals[i];
+			if (x == p[0] && y == p[1]) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+var mapGenerator = function(loc, px, py) {
 	// 20 x 15
 	// tree = "\u2663"
 
@@ -140,7 +157,7 @@ var mapGenerator = function(type, px, py) {
 	*/
 
 	var locationTypes = {"thicket": 0.5, "forest": 0.7, "veld": 0.9};
-	var t = locationTypes[type];
+	var t = locationTypes[loc.type];
 
 	var l = [];
 
@@ -154,7 +171,9 @@ var mapGenerator = function(type, px, py) {
 				l[i].push(0);  // player
 			}
 
-			if (r > t){
+			if (checkPortal(loc.portals, i, ii)) {
+				l[i].push(2617);
+			} else if (r > t) {
 				l[i].push(2663);
 			} else {
 				l[i].push(0);
