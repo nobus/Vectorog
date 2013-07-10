@@ -20,15 +20,15 @@ WorldMap._newLocation = function(name, type, x, y, z, px, py) {
 	var lid = this.getLIDByXYZ(x, y, z);
 
 	if (!(lid in this.locations)) {
-		var l = new Location(name, type, px, py);
-		this.locations[lid] = l;
+		var loc = new Location(name, type, lid, px, py);
+		this.locations[lid] = loc;
 	}
 
-	return lid;
+	return this.locations[lid];
 }
 
-WorldMap.newLocation = function(name, type, x, y, z, px, py) {
-	var lid = this._newLocation(name, type, x, y, z, px, py);
+WorldMap.getLocation = function(name, type, x, y, z, px, py) {
+	var loc = this._newLocation(name, type, x, y, z, px, py);
 
 	/*
 	setNeighborhood:
@@ -45,7 +45,7 @@ WorldMap.newLocation = function(name, type, x, y, z, px, py) {
 	this._newLocation("UNDEFINED", type, x, y - 1, z);
 	this._newLocation("UNDEFINED", type, x, y + 1, z);
 
-	return lid;
+	return loc;
 }
 
 WorldMap.getNeighborhoodLocation = function (direction, lid) {
@@ -73,9 +73,10 @@ WorldMap.getNeighborhoodLocation = function (direction, lid) {
 	return false;
 }
 
-var Location = function(name, type, px, py) {
+var Location = function(name, type, lid, px, py) {
 	this.name = name;
 	this.type = type;
+	this.lid = lid;
 	this.neighborhood = {};	// ???
 	this.maps = mapGenerator(type, px, py);
 	this.bg_color = bgFactory(type);

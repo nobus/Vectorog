@@ -53,15 +53,14 @@ var drawGrid = function(paper){
 }
 
 var drawAll = function (paper, name, type, x, y, z, px, py) {
-	var lid = WorldMap.newLocation(name, type, x, y, z, px, py);
-	var l = WorldMap.getLocationByLID(lid);
+	var loc = WorldMap.getLocation(name, type, x, y, z, px, py);
 
-	drawLocation(paper, l);
+	drawLocation(paper, loc);
 	drawGrid(paper);
 
-	$("#map").html(lid);
+	$("#map").html(loc.lid);
 
-	return lid;
+	return loc.lid;
 }
 
 var drawStartLocation = function () {
