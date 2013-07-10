@@ -92,6 +92,7 @@ var Location = function(name, type, lid, px, py) {
 	this.type = type;
 	this.lid = lid;
 	this.neighborhood = {};	// ???
+	this.portals = portalsGenerator();
 	this.maps = mapGenerator(type, px, py);
 	this.bg_color = bgFactory(type);
 }
@@ -99,6 +100,31 @@ var Location = function(name, type, lid, px, py) {
 var bgFactory = function(type) {
 	var locationTypes = {"thicket": "#5da130", "forest": "#5da130", "veld": "#5da130", "cave": "#99958c", "mine": "#99958c"};
 	return locationTypes[type];
+}
+
+var portalsGenerator = function() {
+	var portals = [];
+
+	var n = getRandomInt(0, 2);
+
+	if (n > 0) {
+		for (var i = 0; i < n; i++) {
+			var prev_x = 0;
+			var prev_y = 0;
+
+			if (portals.length) {
+				prev_x = portals[portals.length - 1][0];
+				prev_y = portals[portals.length - 1][1];
+			}
+
+			var x = getRandomInt(prev_x, 20);
+			var y = getRandomInt(prev_y, 15);
+
+			portals.push([x, y]);
+		}
+	}
+
+	return portals;
 }
 
 var mapGenerator = function(type, px, py) {
