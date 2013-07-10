@@ -78,6 +78,12 @@ var Location = function(name, type, px, py) {
 	this.type = type;
 	this.neighborhood = {};	// ???
 	this.maps = mapGenerator(type, px, py);
+	this.bg_color = bgFactory(type);
+}
+
+var bgFactory = function(type) {
+	var locationTypes = {"thicket": "#5da130", "forest": "#5da130", "veld": "#5da130"};
+	return locationTypes[type];
 }
 
 var mapGenerator = function(type, px, py) {

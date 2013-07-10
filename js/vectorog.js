@@ -22,6 +22,9 @@ var drawLocation = function(paper, l) {
 	var x = 20;
 	var y = 20;
 
+	var bg_color = l.bg_color;
+	paper.rect(0, 0, 800, 600).attr({"fill": bg_color});
+
 	var maps = l.maps;
 
 	for (var i = 0; i < maps.length; i++){
@@ -50,7 +53,6 @@ var drawGrid = function(paper){
 }
 
 var drawAll = function (paper, name, type, x, y, z, px, py) {
-	var bg = paper.rect(0, 0, 800, 600).attr({"fill": "#5da130"});
 	var lid = WorldMap.newLocation(name, type, x, y, z, px, py);
 	var l = WorldMap.getLocationByLID(lid);
 
