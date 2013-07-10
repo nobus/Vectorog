@@ -15,11 +15,23 @@ WorldMap.getXYZByLID = function(lid) {
 	return lid.split("_");
 }
 
-WorldMap._newLocation = function(name, type, x, y, z, px, py) {
+WorldMap.generateLocationType = function(x, y, z) {
+	var ground = ["veld", "forest", "thicket"];
+	var underground = ["cave", "mine"];
+
+	if (z == 0) {
+		return ground[getRandomInt(0, ground.length - 1)];
+	} else {
+		return underground[getRandomInt(0, underground.length - 1)];
+	}
+}
+
+WorldMap._newLocation = function(name, x, y, z, px, py) {
 	// px and py == undefined if palyer not in location
 	var lid = this.getLIDByXYZ(x, y, z);
 
 	if (!(lid in this.locations)) {
+		var type = this.generateLocationType(x, y, z);
 		var loc = new Location(name, type, lid, px, py);
 		this.locations[lid] = loc;
 	}
@@ -27,8 +39,8 @@ WorldMap._newLocation = function(name, type, x, y, z, px, py) {
 	return this.locations[lid];
 }
 
-WorldMap.getLocation = function(name, type, x, y, z, px, py) {
-	var loc = this._newLocation(name, type, x, y, z, px, py);
+WorldMap.getLocation = function(name, x, y, z, px, py) {
+	var loc = this._newLocation(name, x, y, z, px, py);
 
 	/*
 	setNeighborhood:
@@ -40,10 +52,10 @@ WorldMap.getLocation = function(name, type, x, y, z, px, py) {
 		south
 	*/
 
-	this._newLocation("UNDEFINED", type, x - 1, y, z);
-	this._newLocation("UNDEFINED", type, x + 1, y, z);
-	this._newLocation("UNDEFINED", type, x, y - 1, z);
-	this._newLocation("UNDEFINED", type, x, y + 1, z);
+	this._newLocation("UNDEFINED", x - 1, y, z);
+	this._newLocation("UNDEFINED", x + 1, y, z);
+	this._newLocation("UNDEFINED", x, y - 1, z);
+	this._newLocation("UNDEFINED", x, y + 1, z);
 
 	return loc;
 }
