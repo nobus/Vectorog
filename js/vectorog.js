@@ -33,6 +33,8 @@ var drawLocation = function(paper, l) {
 
 			if (e == 2663) {
 				paper.text(x, y, "\u2663").attr({"font": "20px Arial"});
+			} else if (e == 2617) {
+				paper.text(x, y, "\u2617").attr({"font": "20px Arial"});
 			}
 
 			x += 40;
