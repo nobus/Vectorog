@@ -82,7 +82,7 @@ var Location = function(name, type, px, py) {
 }
 
 var bgFactory = function(type) {
-	var locationTypes = {"thicket": "#5da130", "forest": "#5da130", "veld": "#5da130"};
+	var locationTypes = {"thicket": "#5da130", "forest": "#5da130", "veld": "#5da130", "cave": "#99958c", "mine": "#99958c"};
 	return locationTypes[type];
 }
 
