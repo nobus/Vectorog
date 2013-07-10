@@ -241,5 +241,24 @@ $(function() {
 	$("#save_game").click(function(){
 		window.localStorage["vectorog"] = JSON.stringify(WorldMap["locations"]);
 	});
+
+	$("#new_game").click(function(){
+		$("#dialog_menu").hide();
+		$("#dialog_approve").show();
+	});
+
+	$("#approve").click(function(){
+		window.localStorage.removeItem("vectorog");
+		window.location.reload();
+	});
+
+	$("#no_approve").click(function(){
+		$("#dialog_approve").hide();
+		gamePaused = false;
+	});
+
+
 });
+
+
 
