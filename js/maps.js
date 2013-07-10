@@ -19,7 +19,9 @@ WorldMap.generateLocationType = function(x, y, z) {
 	var ground = ["veld", "forest", "thicket"];
 	var underground = ["cave", "mine"];
 
-	if (z == 0) {
+	if (x == 0 && y == 0 && z == 0) {
+		return "veld";
+	} else if (z == 0) {
 		return ground[getRandomInt(0, ground.length - 1)];
 	} else {
 		return underground[getRandomInt(0, underground.length - 1)];
