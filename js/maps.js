@@ -106,25 +106,17 @@ var bgFactory = function(type) {
 var portalsGenerator = function() {
 	var portals = [];
 
-	var n = getRandomInt(0, 3);
+	// in location 2 side
+	var side = [[0, 9], [10, 19]];
 
-	if (n > 0) {
-		for (var i = 0; i < n; i++) {
-			var prev_x = 0;
-			var prev_y = 0;
+	for (var i = 0; i < 2; i++) {
+		var n = getRandomInt(0, 1);
 
-			if (portals.length) {
-				prev_x = portals[portals.length - 1][0];
-				prev_y = portals[portals.length - 1][1];
-			}
-
-			var x = getRandomInt(prev_x, 20);
-			var y = getRandomInt(prev_y, 15);
-
-			// check distance between portals
-			if (((x - prev_x) > 3) && ((y - prev_y) > 3 )) {
-				portals.push([x, y]);
-			}
+		if (n) {
+			var s = side[i];
+			var x = getRandomInt(s[0], s[1]);
+			var y = getRandomInt(0, 14);
+			portals.push([x, y]);
 		}
 	}
 
@@ -145,44 +137,28 @@ var checkPortal = function(portals, x, y) {
 }
 
 var mapGenerator = function(loc, px, py) {
-	// 20 x 15
-	// tree = "\u2663"
-
-	/*
-		types:
-			forest = 0.7
-			thicket = 0.5
-
-
-	*/
-
 	var locationTypes = {"thicket": 0.5, "forest": 0.7, "veld": 0.9};
 	var t = locationTypes[loc.type];
 
 	var l = [];
 
-	for (var i = 0; i < 15; i++){
-		l.push([]);
+	for (var y = 0; y < 15; y++){
+		l.push([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 
-		for (var ii = 0; ii < 20; ii++){
+		for (var x = 0; x < 20; x++){
 			var r = randInt();
 
-			if (i == py && ii == px) {
-				l[i].push(0);  // player
-			}
-
-			if (checkPortal(loc.portals, i, ii)) {
-				l[i].push(2617);
+			if (checkPortal(loc.portals, x, y)) {
+				l[y][x] = 2617;
 			} else if (r > t) {
-				l[i].push(2663);
-			} else {
-				l[i].push(0);
+				l[y][x] = 2663;
 			}
 		}
 	}
 
 	return l;
 }
+
 
 
 
