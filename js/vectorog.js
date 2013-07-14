@@ -206,6 +206,8 @@ $(function() {
 	if (storageSupport()) {
 		if ("vectorog" in window.localStorage) {
 			WorldMap["locations"] = JSON.parse(window.localStorage["vectorog"]);
+		} else {
+			WorldMap["locations"] = WorldMap.chunkGenerator({"x": 0, "y": 0, "z": 0});
 		}
 	} else {
 		return false;

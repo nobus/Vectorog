@@ -53,6 +53,10 @@ WorldMap._newLocation = function(name, xyz, px, py) {
 	return this.locations[lid];
 }
 
+WorldMap.chunkGenerator = function(xyz) {
+	return {};
+}
+
 WorldMap.getLocation = function(name, xyz, px, py) {
 	/*
 		!!!!!!!!!!!!!!!
