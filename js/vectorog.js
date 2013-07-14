@@ -35,6 +35,8 @@ var drawLocation = function(paper, l) {
 				paper.text(x, y, "\u2663").attr({"font": "20px Arial"});
 			} else if (e == 2617) {
 				paper.text(x, y, "\u2617").attr({"font": "20px Arial"});
+			} else if (e == 2616) {
+				paper.text(x, y, "\u2616").attr({"font": "20px Arial"});
 			}
 
 			x += 40;
@@ -92,6 +94,10 @@ var drawSomeLocation = function (direction) {
 	} else if (direction == "east") {
 		x++;
 		px = 20;
+	} else if (direction == "up") {
+		z++;
+	} else if (direction == "down") {
+		z--;
 	}
 
 	$("#container").html("");
@@ -144,25 +150,59 @@ var nextLocation = function(x, y) {
 		// west
 		var next_location = WorldMap.getNeighborhoodLocation("west", current_lid);
 		x = 780;
-		return checkPath(x, y, next_location);
+		if (checkPath(x, y, next_location)) {
+			return "west";
+		}
 	} else if (x >= 800){
 		// east
 		var next_location = WorldMap.getNeighborhoodLocation("east", current_lid);
 		x = 20;
-		return checkPath(x, y, next_location);
+		if (checkPath(x, y, next_location)) {
+			return "east";
+		}
 	} else if (y <= 0) {
 		// north
 		var next_location = WorldMap.getNeighborhoodLocation("north", current_lid);
 		y = 580;
-		return checkPath(x, y, next_location);
+		if (checkPath(x, y, next_location)) {
+			return "north";
+		}
 	} else if (y >= 600) {
 		// south
 		var next_location = WorldMap.getNeighborhoodLocation("south", current_lid);
 		y = 20;
-		return checkPath(x, y, next_location);
+		if (checkPath(x, y, next_location)) {
+			return "south";
+		}
+	}
+
+	// get portals
+	var curLocation = WorldMap.getLocationByLID(current_lid);
+
+	x = Math.ceil(x / 40) - 1;
+	y = Math.ceil(y / 40) - 1;
+
+	// check portals
+	if (checkUpPortal(curLocation, x, y)) {	
+		// up or down
+		return "up";
+	} else if (checkDownPortal(curLocation, x, y)) {
+		return "down"
 	}
 
 	return false;
+}
+
+var checkAndStep = function(x, y) {
+	var lid = player.getLID();
+
+	var direction = nextLocation(x, y);
+
+	if (direction) {
+		drawSomeLocation(direction);
+	} else if (checkPath(x, y, lid)) {
+		player.setPosition(x, y);
+	}
 }
 
 $(function() {
@@ -177,56 +217,30 @@ $(function() {
 	var screen = Raphael("container", 800, 600, drawStartLocation); 
 
 	$(document).keydown(function(event){
-		/*
-			key codes:
-			w		87
-			a		65
-			s		83
-			d		68
-
-			up		38
-			left	37
-			down	40
-			right	39
-		*/
-
 		var key = event.keyCode;
 
 		var position = player.getPosition();
 		var x = position[0];
 		var y = position[1];
 
-		var lid = player.getLID();
-
 		var step = 40;
+
+		// w or up key
 		if (key == 87 || key == 38) {
-			// up
-			if (nextLocation(x, y - step)) {
-				drawSomeLocation("north");
-			} else if (checkPath(x, y - step, lid)) {
-				player.setPosition(x, y - step);
-			}
+			// north
+			checkAndStep(x, y - step);
+		// s or down keys
 		} else if (key == 83 || key == 40) {
-			// down
-			if (nextLocation(x, y + step)) {
-				drawSomeLocation("south");
-			} else if (checkPath(x, y + step, lid)) {
-				player.setPosition(x, y + step);
-			}
+			// south
+			checkAndStep(x, y + step);
+		// a or left keys
 		} else if (key == 65 || key == 37) {
-			// left
-			if (nextLocation(x - step, y)) {
-				drawSomeLocation("west");
-			} else if (checkPath(x - step, y, lid)) {
-				player.setPosition(x - step, y);
-			}
+			// west
+			checkAndStep(x - step, y);
+		// d or right keys
 		} else if (key == 68 || key == 39) {
-			// right
-			if (nextLocation(x + step, y)) {
-				drawSomeLocation("east");
-			} else if (checkPath(x + step, y, lid)) {
-				player.setPosition(x + step, y);
-			}
+			// east
+			checkAndStep(x + step, y);
 		}
 
 	});
