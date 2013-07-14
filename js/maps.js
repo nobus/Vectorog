@@ -57,6 +57,12 @@ WorldMap.chunkGenerator = function(xyz) {
 	return {};
 }
 
+WorldMap.initialLocations = function() {
+	// PROTOTYPE !!!!!!!!!!
+
+	this.locations = this.chunkGenerator({"x": 0, "y": 0, "z": 0});
+}
+
 WorldMap.getLocation = function(name, xyz, px, py) {
 	/*
 		!!!!!!!!!!!!!!!
