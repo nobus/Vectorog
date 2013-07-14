@@ -7,34 +7,45 @@ WorldMap.getLocationByLID = function(lid) {
 	return this.locations[lid];
 }
 
-WorldMap.getLIDByXYZ = function(x, y, z) {
-	return parseInt(x) + "_" + parseInt(y) + "_" + parseInt(z);
+WorldMap.getLocationByXYZ = function(xyz) {
+	var lid = this.getLIDByXYZ(xyz);
+	return this.locations[lid];
+}
+
+WorldMap.getLIDByXYZ = function(xyz) {
+	return parseInt(xyz.x) + "_" + parseInt(xyz.y) + "_" + parseInt(xyz.z);
 }
 
 WorldMap.getXYZByLID = function(lid) {
 	var raw = lid.split("_");
-	return [parseInt(raw[0]), parseInt(raw[1]), parseInt(raw[2])];	// need {} !!!!
+
+	var xyz = {};
+	xyz.x = parseInt(raw[0]); 
+	xyz.y = parseInt(raw[1]); 
+	xyz.z = parseInt(raw[2]);	// need {} !!!!
+
+	return xyz;
 }
 
-WorldMap.generateLocationType = function(x, y, z) {
+WorldMap.generateLocationType = function(xyz) {
 	var ground = ["veld", "forest", "thicket"];
 	var underground = ["cave"];
 
-	if (x == 0 && y == 0 && z == 0) {
+	if (xyz.x == 0 && xyz.y == 0 && xyz.z == 0) {
 		return "veld";
-	} else if (z == 0) {
+	} else if (xyz.z == 0) {
 		return ground[getRandomInt(0, ground.length - 1)];
 	} else {
 		return underground[getRandomInt(0, underground.length - 1)];
 	}
 }
 
-WorldMap._newLocation = function(name, x, y, z, px, py) {
+WorldMap._newLocation = function(name, xyz, px, py) {
 	// px and py == undefined if palyer not in location
-	var lid = this.getLIDByXYZ(x, y, z);
+	var lid = this.getLIDByXYZ(xyz);
 
 	if (!(lid in this.locations)) {
-		var type = this.generateLocationType(x, y, z);
+		var type = this.generateLocationType(xyz);
 		var loc = new Location(name, type, lid, px, py);
 		this.locations[lid] = loc;
 	}
@@ -42,65 +53,62 @@ WorldMap._newLocation = function(name, x, y, z, px, py) {
 	return this.locations[lid];
 }
 
-WorldMap.getLocation = function(name, x, y, z, px, py) {
+WorldMap.getLocation = function(name, xyz, px, py) {
 	/*
 		!!!!!!!!!!!!!!!
 		need chunk generator
 		!!!!!!!!!!!!!!!
 	*/
 
-	var loc = this._newLocation(name, x, y, z, px, py);
+	var loc = this._newLocation(name, xyz, px, py);
 
 	// west
-	this._newLocation("UNDEFINED", x - 1, y, z);
+	this._newLocation("UNDEFINED", {"x": xyz.x - 1, "y": xyz.y, "z": xyz.z});
 
 	// east
-	this._newLocation("UNDEFINED", x + 1, y, z);
+	this._newLocation("UNDEFINED", {"x": xyz.x + 1, "y": xyz.y, "z": xyz.z});
 
 	// north
-	this._newLocation("UNDEFINED", x, y - 1, z);
+	this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y - 1, "z": xyz.z});
 
 	// south
-	this._newLocation("UNDEFINED", x, y + 1, z);
+	this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y + 1, "z": xyz.z});
 
 	// down
-	if (z > -9) {
-		this._newLocation("UNDEFINED", x, y, z - 1);
+	if (xyz.z > -9) {
+		this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y, "z": xyz.z - 1});
 	}
 
 	// top
-	if (z < 0 ) {
-		this._newLocation("UNDEFINED", x, y, z + 1);
+	if (xyz.z < 0 ) {
+		this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y, "z": xyz.z + 1});
 	}
 
 	return loc;
 }
 
 WorldMap.getNeighborhoodLocation = function (direction, lid) {
-	var coord = this.getXYZByLID(lid);
-	var x = coord[0];
-	var y = coord[1];
-	var z = coord[2];
+	var xyz = this.getXYZByLID(lid);
 
 	if (direction == "north") {
-		y--;
+		xyz.y--;
 	} else if (direction == "south") {
-		y++;
+		xyz.y++;
 	} else if (direction == "west") {
-		x--;
+		xyz.x--;
 	} else if (direction == "east") {
-		x++;
+		xyz.x++;
 	} else if (direction == "down") {
-		z--;
+		xyz.z--;
 	} else if (direction == "up") {
-		z++;
+		xyz.z++;
 	}
 
-	var new_lid = this.getLIDByXYZ(x, y, z);
+	var new_lid = this.getLIDByXYZ(xyz);
 
 	if (!(new_lid in this.locations)) {
-		var c = this.getXYZByLID(lid)
-		this.getLocation("UNDEFINED", c[0], c[1], c[2]);
+		var new_xyz = this.getXYZByLID(lid)
+		this.getLocation("UNDEFINED", new_xyz);
 	}	
 
 	return new_lid;
@@ -110,10 +118,10 @@ var Location = function(name, type, lid, px, py) {
 	this.name = name;
 	this.type = type;
 	this.lid = lid;
-	this.coord = WorldMap.getXYZByLID(lid);
+	this.xyz = WorldMap.getXYZByLID(lid);
 
 	this.upPortals = createUpPortals(this);
-	this.downPortals = portalsGenerator(this);
+	this.downPortals = portalsGenerator(this, px, py);
 
 	this.maps = mapGenerator(this, px, py);
 	this.bg_color = bgFactory(type);
@@ -126,10 +134,10 @@ var bgFactory = function(type) {
 
 var createUpPortals = function(loc) {
 	// all down portal have up portal
-	var coord = WorldMap.getXYZByLID(loc.lid);
+	var xyz = WorldMap.getXYZByLID(loc.lid);
 
 	// if this location is undeground
-	if (coord[2] < 0 ) {
+	if (xyz.z < 0 ) {
 		var locup_lid = WorldMap.getNeighborhoodLocation("up", loc.lid);
 		var locup = WorldMap.getLocationByLID(locup_lid);
 
@@ -139,7 +147,7 @@ var createUpPortals = function(loc) {
 	}
 }
 
-var portalsGenerator = function(loc) {
+var portalsGenerator = function(loc, px, py) {
 	var portals = [];
 
 	// in location 2 side
@@ -152,6 +160,11 @@ var portalsGenerator = function(loc) {
 			var s = side[i];
 			var x = getRandomInt(s[0], s[1]);
 			var y = getRandomInt(0, 14);
+
+			// player
+			if (x == px && y == py) {
+				continue;
+			}
 
 			if (!checkUpPortal(loc, x, y)) { 
 				portals.push([x, y]);
@@ -194,7 +207,7 @@ var blankMap = function() {
 }
 
 var mapGenerator = function(loc, px ,py) {
-	var z = loc.coord[2];	
+	var z = loc.xyz.z;	
 
 	if (z < 0 ) {
 		return undegroundGenerator(loc, px, py);
@@ -211,6 +224,12 @@ var groundGenerator = function(loc, px, py) {
 
 	for (var y = 0; y < 15; y++){
 		for (var x = 0; x < 20; x++){
+
+			// player
+			if (x == px && y == py) {
+				continue;
+			}
+
 			var r = randInt();
 
 			if (checkDownPortal(loc, x, y)) {
@@ -229,6 +248,12 @@ var undegroundGenerator = function(loc, px, py) {
 
 	for (var y = 0; y < 15; y++){
 		for (var x = 0; x < 20; x++){
+
+			// player
+			if (x == px && y == py) {
+				continue;
+			}
+
 			if (checkUpPortal(loc, x, y)) {
 				l[y][x] = 2616;
 			} else if (checkDownPortal(loc, x, y)) {

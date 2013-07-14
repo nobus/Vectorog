@@ -56,8 +56,8 @@ var drawGrid = function(paper){
 	}
 }
 
-var drawAll = function (paper, name, x, y, z, px, py) {
-	var loc = WorldMap.getLocation(name, x, y, z, px, py);
+var drawAll = function (paper, name, xyz, px, py) {
+	var loc = WorldMap.getLocation(name, xyz, px, py);
 
 	drawLocation(paper, loc);
 	drawGrid(paper);
@@ -68,42 +68,39 @@ var drawAll = function (paper, name, x, y, z, px, py) {
 }
 
 var drawStartLocation = function () {
-	var lid = drawAll(this, "Starting location.", 0, 0, 0, 2, 2);
+	var lid = drawAll(this, "Starting location.", {"x": 0, "y": 0, "z": 0}, 2, 2);
 	player = new Creatures("Player", "@", lid, this, 100, 100);
 }
 
 var drawSomeLocation = function (direction) {
-	var c = WorldMap.getXYZByLID(player.getLID());
-	var x = c[0];
-	var y = c[1];
-	var z = c[2];
+	var xyz = WorldMap.getXYZByLID(player.getLID());
 
 	var p = player.getPosition();
 	var px = p[0];
 	var py = p[1];
 
 	if (direction == "north") {
-		y--;
+		xyz.y--;
 		py = 580;
 	} else if (direction == "south") {
-		y++;
+		xyz.y++;
 		py = 20;
 	} else if (direction == "west") {
-		x--;
+		xyz.x--;
 		px = 780;
 	} else if (direction == "east") {
-		x++;
+		xyz.x++;
 		px = 20;
 	} else if (direction == "up") {
-		z++;
+		xyz.z++;
 	} else if (direction == "down") {
-		z--;
+		xyz.z--;
 	}
 
 	$("#container").html("");
 
 	var screen = Raphael("container", 800, 600, function () {
-			var lid = drawAll(this, "UNDEFINED", x, y, z, px, py);			
+			var lid = drawAll(this, "UNDEFINED", xyz, px, py);			
 
 			player.setLID(lid);
 			player.setPosition(px, py, this);
