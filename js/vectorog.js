@@ -62,7 +62,7 @@ var drawAll = function (paper, xyz) {
 	drawLocation(paper, loc);
 	drawGrid(paper);
 
-	$("#map").html(loc.lid);
+	$(".cmd").html(loc.lid);
 
 	return loc.lid;
 }

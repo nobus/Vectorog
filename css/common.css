@@ -12,3 +12,15 @@
 	font-size: 20px;
 }
 
+.messenger {
+	width: 1050px;
+	height: 140px;
+	border: 1px solid black;
+}
+
+.cmd {
+	width: 1050px;
+	height: 20px;
+	border: 1px solid black;
+}
+

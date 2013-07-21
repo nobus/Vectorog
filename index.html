@@ -3,7 +3,8 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-   	<link href="css/common.css" rel="stylesheet" media="screen">
+
+   	<link href="css/common.css" rel="stylesheet">
 
 	<script src="http://code.jquery.com/jquery-1.10.0.min.js" type="text/javascript"></script>
 	<script src="http://raphaeljs.com/raphael.js" type="text/javascript"></script>
@@ -17,14 +18,48 @@
 </head>
 
 <body>
-	<table align=center border=1>
+	<table align=center border=0>
 		<tr>
-			<td>
-				<button id="menu">MENU</button></br>
-				<div id="map"></div>
+			<td width="120px">
+				<table border=1>
+					<tr><td width="120px" height="30px"><button id="menu">MENU</button></td></tr>
+					<tr><td width="120px" height="30px">clock</td></tr>
+					<tr><td width="120px" height="30px">direction</td></tr>
+					<tr><td width="120px" height="120px">map 3x3</td></tr>
+					<tr><td width="120px" height="30px">might</td></tr>
+					<tr><td width="120px" height="30px">dex</td></tr>
+					<tr><td width="120px" height="30px">int</td></tr>
+					<tr><td width="120px" height="30px">health</td></tr>
+					<tr><td width="120px" height="30px">stamina</td></tr>
+					<tr><td width="120px" height="30px">mana</td></tr>
+					<tr><td width="120px" height="30px"></td></tr>
+				</table>
 			</td>
-			<td><div id="container"></div><td>
-			<td></td>
+			<td width="800px" height="600px"><div id="container"></div></td>
+			<td width="120px">
+				<table border=1>
+					<tr><td width="120px" height="30px">head</td></tr>
+					<tr><td width="120px" height="30px">necklace</td></tr>
+					<tr><td width="120px" height="30px">body</td></tr>
+					<tr><td width="120px" height="30px">gloves</td></tr>
+					<tr><td width="120px" height="30px">left arm</td></tr>
+					<tr><td width="120px" height="30px">right arm</td></tr>
+					<tr><td width="120px" height="30px">left finger</td></tr>
+					<tr><td width="120px" height="30px">right finger</td></tr>
+					<tr><td width="120px" height="30px">legs</td></tr>
+					<tr><td width="120px" height="30px">shoes</td></tr>
+					<tr><td width="120px" height="30px">coints</td></tr>
+					<tr><td width="120px" height="120px">backpack</td></tr>
+					<tr><td width="120px" height="30px">coints</td></tr>
+				</table>
+
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" height="160px">
+				<div class="messenger"></div>
+				<div class="cmd"></div>
+			</td>
 		</tr>
 	</table>
 
