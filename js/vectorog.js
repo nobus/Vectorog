@@ -56,8 +56,8 @@ var drawGrid = function(paper){
 	}
 }
 
-var drawAll = function (paper, name, xyz, px, py) {
-	var loc = WorldMap.getLocation(name, xyz, px, py);
+var drawAll = function (paper, xyz) {
+	var loc = WorldMap.getLocationByXYZ(xyz);
 
 	drawLocation(paper, loc);
 	drawGrid(paper);
@@ -68,7 +68,7 @@ var drawAll = function (paper, name, xyz, px, py) {
 }
 
 var drawStartLocation = function () {
-	var lid = drawAll(this, "Starting location.", {"x": 0, "y": 0, "z": 0}, 2, 2);
+	var lid = drawAll(this, {"x": 0, "y": 0, "z": 0});
 	player = new Creatures("Player", "@", lid, this, 100, 100);
 }
 
@@ -100,7 +100,7 @@ var drawSomeLocation = function (direction) {
 	$("#container").html("");
 
 	var screen = Raphael("container", 800, 600, function () {
-			var lid = drawAll(this, "UNDEFINED", xyz, px, py);			
+			var lid = drawAll(this, xyz, px, py);			
 
 			player.setLID(lid);
 			player.setPosition(px, py, this);
@@ -207,7 +207,7 @@ $(function() {
 		if ("vectorog" in window.localStorage) {
 			WorldMap["locations"] = JSON.parse(window.localStorage["vectorog"]);
 		} else {
-			WorldMap.initialLocations();
+			WorldMap.initialLocations({"x": 0, "y": 0, "z": 0});
 		}
 	} else {
 		return false;

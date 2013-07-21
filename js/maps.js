@@ -4,12 +4,17 @@ var WorldMap = {
 }
 
 WorldMap.getLocationByLID = function(lid) {
+	if (!(lid in this.locations)) {
+		var xyz = this.getXYZByLID(lid);
+		this.initialLocations(xyz);
+	} 
+	
 	return this.locations[lid];
 }
 
 WorldMap.getLocationByXYZ = function(xyz) {
 	var lid = this.getLIDByXYZ(xyz);
-	return this.locations[lid];
+	return this.getLocationByLID(lid);
 }
 
 WorldMap.getLIDByXYZ = function(xyz) {
@@ -50,49 +55,48 @@ WorldMap._newLocation = function(name, xyz, px, py) {
 		this.locations[lid] = loc;
 	}
 
+	// ???
 	return this.locations[lid];
 }
 
 WorldMap.chunkGenerator = function(xyz) {
-	return {};
-}
+	xyz.z = 0;
 
-WorldMap.initialLocations = function() {
-	// PROTOTYPE !!!!!!!!!!
-
-	this.locations = this.chunkGenerator({"x": 0, "y": 0, "z": 0});
-}
-
-WorldMap.getLocation = function(name, xyz, px, py) {
-	/*
-		!!!!!!!!!!!!!!!
-		need chunk generator
-		!!!!!!!!!!!!!!!
-	*/
-
-	var loc = this._newLocation(name, xyz, px, py);
-
-	// west
-	this._newLocation("UNDEFINED", {"x": xyz.x - 1, "y": xyz.y, "z": xyz.z});
-
-	// east
-	this._newLocation("UNDEFINED", {"x": xyz.x + 1, "y": xyz.y, "z": xyz.z});
-
-	// north
-	this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y - 1, "z": xyz.z});
-
-	// south
-	this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y + 1, "z": xyz.z});
-
-	// down
-	if (xyz.z > -9) {
-		this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y, "z": xyz.z - 1});
+	if (xyz.x == 0 && xyz.y == 0 && xyz.z == 0) {
+		this._newLocation("Starting location", xyz, 2, 2);
+	} else {
+		this._newLocation("UNDEFINED", xyz);
 	}
 
-	// top
-	if (xyz.z < 0 ) {
-		this._newLocation("UNDEFINED", {"x": xyz.x, "y": xyz.y, "z": xyz.z + 1});
+	// undeground
+	while (xyz.z >= -8) {
+		xyz.z--;
+		this._newLocation("UNDEFINED", xyz);
 	}
+}
+
+WorldMap.initialLocations = function(xyz) {
+	var x = xyz.x;
+	var y = xyz.y;
+
+	var nxyz = [];
+	nxyz.push({"x": x--, "y": y--, "z": 0});
+	nxyz.push({"x":   x, "y": y--, "z": 0});
+	nxyz.push({"x": x++, "y": y--, "z": 0});
+	nxyz.push({"x": x--, "y":   y, "z": 0});
+	nxyz.push({"x":   x, "y":   y, "z": 0});
+	nxyz.push({"x": x++, "y":   y, "z": 0});
+	nxyz.push({"x": x--, "y": y++, "z": 0});
+	nxyz.push({"x":   x, "y": y++, "z": 0});
+	nxyz.push({"x": x++, "y": y++, "z": 0});
+
+	for (var i = 0; i < nxyz.length; i++ ) {
+		this.chunkGenerator(nxyz[i]);
+	}
+}
+
+WorldMap.getLocation = function(xyz) {
+	var loc = this.getLocationByXYZ(xyz);
 
 	return loc;
 }
@@ -118,7 +122,7 @@ WorldMap.getNeighborhoodLocation = function (direction, lid) {
 
 	if (!(new_lid in this.locations)) {
 		var new_xyz = this.getXYZByLID(lid)
-		this.getLocation("UNDEFINED", new_xyz);
+		this.getLocation(new_xyz);
 	}	
 
 	return new_lid;
@@ -159,6 +163,11 @@ var createUpPortals = function(loc) {
 
 var portalsGenerator = function(loc, px, py) {
 	var portals = [];
+	var z = loc.xyz.z;
+
+	if (z <= -9) {
+		return portals;
+	}
 
 	// in location 2 side
 	var side = [[0, 9], [10, 19]];
