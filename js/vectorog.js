@@ -46,11 +46,9 @@ var drawLocation = function(paper, l) {
 	}
 }
 
-var drawGrid = function(paper){
-	var size= 40
-
-	for(var i = 0; i < 800; i = i + size){
-		for (var ii = 0; ii < 600; ii = ii + size){
+var drawGrid = function(paper, width, height, size){
+	for(var i = 0; i < width; i = i + size){
+		for (var ii = 0; ii < height; ii = ii + size){
 			paper.rect(i, ii, size, size);
 		}
 	}
@@ -60,7 +58,7 @@ var drawAll = function (paper, xyz) {
 	var loc = WorldMap.getLocationByXYZ(xyz);
 
 	drawLocation(paper, loc);
-	drawGrid(paper);
+	drawGrid(paper, 800, 600, 40);
 
 	$(".cmd").html(loc.lid);
 
@@ -69,7 +67,45 @@ var drawAll = function (paper, xyz) {
 
 var drawStartLocation = function () {
 	var lid = drawAll(this, {"x": 0, "y": 0, "z": 0});
-	player = new Creatures("Player", "@", lid, this, 100, 100);
+	createPlayer(this, lid);
+}
+
+var createPlayer = function(paper, lid) {
+	var ctx = {};
+	ctx.lid = lid;
+	ctx.paper = paper;
+	ctx.name = "Player";
+	ctx.view = "@";
+	ctx.x = 100;
+	ctx.y = 100;
+
+	ctx.might = 50;
+	ctx.dex = 10;
+	ctx.intel = 10;
+
+	ctx.health = 50;
+	ctx.stamina = 10;
+	ctx.mana = 10;
+
+	ctx.skills = {};
+
+	ctx.equipment = {};
+	ctx.equipment.head = NaN;
+	ctx.equipment.necklace = NaN;
+	ctx.equipment.body = NaN;
+	ctx.equipment.gloves = NaN;
+	ctx.equipment.left_arm = NaN;
+	ctx.equipment.right_arm = NaN;
+	ctx.equipment.left_finger = NaN;
+	ctx.equipment.right_finger = NaN;
+	ctx.equipment.legs = NaN;
+	ctx.equipment.shoes = NaN;
+
+	ctx.backpack = {};
+
+	ctx.coints = 100;
+
+	player = new Creatures(ctx);
 }
 
 var drawSomeLocation = function (direction) {
